@@ -1,11 +1,16 @@
 import React, {Component} from 'react';
 import {getMovies} from "../services/fakeMovieService";
-import Like from '../commons/like'
+import Like from '../commons/like';
+import Pagination from '../commons/pagination';
+import {paginate} from '../utils/paginate';
+
 
 class movies extends Component {
 
     state = {
-        movies: getMovies()
+        movies: getMovies(),
+        currentPage:1,
+        pageSize:4
     };
     handleDelete = (movie) => {
        const movies=this.state.movies.filter(m=>m._id!==movie._id);
@@ -19,11 +24,17 @@ class movies extends Component {
         this.setState({movies});
         //console.log(movies[index].liked);
     };
+    handlePageChance =page=>{
+     this.setState({currentPage:page})
+    };
 
     render() {
         const {length:count}=this.state.movies;
+        const {currentPage,pageSize,movies:allMovies}=this.state;
+
         if (count===0)
             return <h3><p>There are no movies in database</p></h3>;
+        const movies=paginate(allMovies,currentPage,pageSize);
         return (
             <React.Fragment>
                 <h3> <p>Showing movies : {count}</p></h3>
@@ -40,7 +51,7 @@ class movies extends Component {
                     </thead>
                     <tbody>
                     {
-                        this.state.movies.map(movie => (
+                        movies.map(movie => (
                         <tr key={movie._id}>
                             <td>{movie.title}</td>
                             <td>{movie.genre.name}</td>
@@ -58,7 +69,14 @@ class movies extends Component {
                     ))}
 
                     </tbody>
+
                 </table>
+                <Pagination
+                    itemsCount={count}
+                    pageSize={pageSize}
+                    currentPage={currentPage}
+                    onPageChance={this.handlePageChance}
+                />
             </React.Fragment>
 
         );
