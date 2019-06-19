@@ -2,14 +2,12 @@ import React from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 //Ctrl+Q quick view
-const Pagination = props=>{
-    const {itemsCount,pageSize,currentPage,onPageChance}=props;
+
+const Pagination = ({itemsCount,pageSize,currentPage,onPageChance})=>{
+
     const pageCount=Math.ceil(itemsCount/pageSize);
     if(pageCount===1) return null;
     const pages=_.range(1,pageCount+1);
-
-    console.log(currentPage);
-
 
     return(
         <nav>
@@ -17,9 +15,9 @@ const Pagination = props=>{
                 {pages.map(page=>(
                     <li key={page}
                         className={page===currentPage?"page-item active":"page-item"}>
-                        <a className="page-link"
+                        <button className="page-link"
                            onClick={()=>onPageChance(page)}>{page}
-                        </a>
+                        </button>
                     </li>
                 ))}
 
